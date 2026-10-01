@@ -1,7 +1,6 @@
 
 from app.database import supabase
 from app.services.embeddings import create_embedding
-from app.services.reranker import rerank_chunks
 
 
 def retrieve_chunks(
@@ -11,7 +10,6 @@ def retrieve_chunks(
 ):
     query_embedding = create_embedding(query)
 
-    # Retrieve more candidates than the final result count.
     candidate_count = 10
 
     result = supabase.rpc(
@@ -30,7 +28,6 @@ def retrieve_chunks(
     print("DOCUMENT ID:", document_id)
     print("RETRIEVED CHUNKS:", len(chunks))
 
-    # Keep the existing threshold for now.
     chunks = [
         chunk for chunk in chunks
         if chunk.get("similarity", 0) >= 0.05
@@ -38,30 +35,9 @@ def retrieve_chunks(
 
     print("CHUNKS AFTER FILTER:", len(chunks))
 
-    # Inspect the entire content during debugging.
-    for index, chunk in enumerate(chunks, start=1):
-        print(f"\n--- CHUNK {index} ---")
-        print("SIMILARITY:", chunk.get("similarity"))
-        print("PAGE:", chunk.get("page_number"))
-        print("CONTENT:")
-        print(chunk.get("content", ""))
-        print("--------------------")
+    # Return chunks without reranking.
+    ranked_chunks = chunks[:match_count]
 
-    # Rerank the candidate chunks.
-    ranked_chunks = rerank_chunks(
-        query,
-        chunks,
-        top_k=match_count
-    )
-
-    print("\n--- FINAL RERANKED CHUNKS ---")
-
-    for index, chunk in enumerate(ranked_chunks, start=1):
-        print(f"\nRANK {index}")
-        print("SIMILARITY:", chunk.get("similarity"))
-        print("PAGE:", chunk.get("page_number"))
-        print(chunk.get("content", ""))
-
-    print("\n========== END DEBUG ==========\n")
+    print("\n========== END RETRIEVAL ==========\n")
 
     return ranked_chunks
