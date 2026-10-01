@@ -13,6 +13,7 @@ import {
 
 import ReactMarkdown from "react-markdown";
 import "./App.css";
+const API_BASE_URL = "https://rag-chatbot-backend-8cuk.onrender.com";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -22,6 +23,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [sources, setSources] = useState([]);
   const [messagesByDocument, setMessagesByDocument] = useState({});
+  
   
   const chatScrollRef = useRef(null);
   const [documents, setDocuments] = useState([]);
@@ -33,9 +35,7 @@ function App() {
 
  const fetchDocuments = async () => {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:8000/documents"
-    );
+    const response = await fetch(`${API_BASE_URL}/documents`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch documents");
@@ -65,10 +65,10 @@ const deleteDocument = async (document) => {
   if (!confirmed) return;
 
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/documents/${document.id}`,
+   const response = await fetch(
+      `${API_BASE_URL}/documents/${document.id}`,
       { method: "DELETE" }
-    );
+     );
 
     if (!response.ok) {
       throw new Error("Failed to delete document");
@@ -119,12 +119,12 @@ const deleteDocument = async (document) => {
 
   try {
     const response = await fetch(
-      "http://127.0.0.1:8000/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+       `${API_BASE_URL}/upload`,
+         {
+           method: "POST",
+           body: formData,
+         }
+      );
 
     if (!response.ok) {
       throw new Error("Upload failed");
@@ -174,8 +174,8 @@ setMessagesByDocument((prev) => ({
   setSources([]);
 
   try {
-   const response = await fetch(
-  `http://127.0.0.1:8000/chat/stream?query=${encodeURIComponent(
+    const response = await fetch(
+  `${API_BASE_URL}/chat/stream?query=${encodeURIComponent(
     currentQuestion
   )}&history=${encodeURIComponent(
     JSON.stringify(messages)
