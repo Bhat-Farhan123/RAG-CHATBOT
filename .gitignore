@@ -1,0 +1,46 @@
+# Environment variables and secrets
+
+.env
+.env.*
+!.env.example
+
+# Python
+
+**pycache**/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Python tools
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Frontend
+
+node_modules/
+dist/
+
+# Logs
+
+*.log
+
+# IDE and OS files
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Uploaded files and generated data
+
+uploads/
+data/
+*.pdf
+
+# Local configuration
+
+.streamlit/secrets.toml
